@@ -1,0 +1,40 @@
+{
+  "name": "timeout-backend",
+  "version": "1.0.0",
+  "description": "TimeOut study rooms backend with Firebase and Clerk integration",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd functions && npm run build",
+    "serve": "firebase emulators:start",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:rules": "firebase deploy --only firestore:rules",
+    "logs": "firebase functions:log",
+    "test": "cd functions && npm test",
+    "test:watch": "cd functions && npm run test:watch",
+    "lint": "cd functions && npm run lint",
+    "lint:fix": "cd functions && npm run lint:fix"
+  },
+  "keywords": [
+    "firebase",
+    "clerk",
+    "study-rooms",
+    "real-time",
+    "typescript"
+  ],
+  "author": "TimeOut Team",
+  "license": "MIT",
+  "devDependencies": {
+    "firebase-tools": "^12.5.0"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2",
+    "firebase": "^12.2.1",
+    "firebase-admin": "^13.5.0"
+  }
+}

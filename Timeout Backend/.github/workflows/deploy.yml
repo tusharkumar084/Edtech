@@ -1,0 +1,22 @@
+# Placeholder for deployment workflow
+# Will be implemented in Step 10: Deployment & CI/CD
+
+name: Deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to Firebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      # Deployment steps will be added in Step 10

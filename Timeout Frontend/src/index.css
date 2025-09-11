@@ -1,0 +1,206 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* TimeOut Design System - Focus & Study App */
+
+@layer base {
+  :root {
+    /* Background System */
+    --background: 220 27% 4%;
+    --background-secondary: 218 25% 6%;
+    --foreground: 210 40% 98%;
+
+    /* Card System */
+    --card: 218 25% 6%;
+    --card-foreground: 210 40% 98%;
+    --card-border: 217 32% 17%;
+
+    /* Glass Effect */
+    --glass: 220 27% 8%;
+    --glass-border: 217 32% 20%;
+
+    /* Brand Colors - Purple/Blue Focus Theme */
+    --primary: 250 84% 60%;
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 250 84% 70%;
+
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    /* Interactive Elements */
+    --muted: 217 32% 12%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 250 84% 60%;
+    --accent-foreground: 210 40% 98%;
+
+    /* Status Colors */
+    --success: 142 76% 56%;
+    --success-foreground: 210 40% 98%;
+    
+    --warning: 38 92% 58%;
+    --warning-foreground: 210 40% 98%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Live/Active States */
+    --live: 0 84% 60%;
+    --live-glow: 0 84% 70%;
+
+    /* Borders & Inputs */
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 250 84% 60%;
+
+    /* Design Tokens */
+    --radius: 1rem;
+    --radius-sm: 0.75rem;
+    --radius-lg: 1.5rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-glass: linear-gradient(135deg, hsl(var(--glass) / 0.8), hsl(var(--glass) / 0.4));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(250 100% 70%));
+
+    /* Shadows */
+    --shadow-glass: 0 8px 32px hsl(var(--primary) / 0.12);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
+    --shadow-card: 0 4px 24px hsl(220 27% 2% / 0.4);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Glass Effect Utilities */
+  .glass {
+    background: hsl(var(--glass) / 0.8);
+    border: 1px solid hsl(var(--glass-border));
+    backdrop-filter: blur(16px);
+    box-shadow: var(--shadow-glass);
+  }
+
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+
+  .glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Animation Classes */
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+
+  .transition-bounce {
+    transition: var(--transition-bounce);
+  }
+
+  /* Clerk Component Styling - Match TimeOut Design */
+  .clerk-auth-container .cl-rootBox {
+    width: 100%;
+  }
+
+  .clerk-auth-container .cl-card {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .clerk-auth-container .cl-headerTitle {
+    color: hsl(var(--foreground)) !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+  }
+
+  .clerk-auth-container .cl-headerSubtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .clerk-auth-container .cl-socialButtonsBlockButton {
+    background: hsl(var(--glass)) !important;
+    border: 1px solid hsl(var(--glass-border)) !important;
+    color: hsl(var(--foreground)) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  .clerk-auth-container .cl-socialButtonsBlockButton:hover {
+    background: hsl(var(--glass) / 0.6) !important;
+  }
+
+  .clerk-auth-container .cl-formButtonPrimary {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow))) !important;
+    border: none !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .clerk-auth-container .cl-formButtonPrimary:hover {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--primary-glow) / 0.9)) !important;
+  }
+
+  .clerk-auth-container .cl-formFieldInput {
+    background: hsl(var(--glass)) !important;
+    border: 1px solid hsl(var(--glass-border)) !important;
+    color: hsl(var(--foreground)) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  .clerk-auth-container .cl-formFieldLabel {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .clerk-auth-container .cl-identityPreviewText {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .clerk-auth-container .cl-identityPreviewEditButton {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .clerk-auth-container .cl-identityPreviewEditButton:hover {
+    color: hsl(var(--primary-glow)) !important;
+  }
+
+  .clerk-auth-container .cl-formHeaderTitle {
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .clerk-auth-container .cl-formHeaderSubtitle {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .clerk-auth-container .cl-footerActionText {
+    color: hsl(var(--muted-foreground)) !important;
+  }
+
+  .clerk-auth-container .cl-footerActionLink {
+    color: hsl(var(--primary)) !important;
+  }
+
+  .clerk-auth-container .cl-footerActionLink:hover {
+    color: hsl(var(--primary-glow)) !important;
+  }
+
+  .clerk-auth-container .cl-dividerLine {
+    background: hsl(var(--border)) !important;
+  }
+
+  .clerk-auth-container .cl-dividerText {
+    color: hsl(var(--muted-foreground)) !important;
+    background: hsl(var(--card)) !important;
+  }
+}

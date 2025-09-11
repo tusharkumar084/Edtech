@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "timeout-backend"
+  },
+  "targets": {
+    "timeout-backend": {
+      "hosting": {
+        "timeout-backend": [
+          "timeout-backend"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

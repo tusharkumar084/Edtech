@@ -1,0 +1,28 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Allow authenticated users to upload files to their own folder
+    match /users/{clerkUserId}/{allPaths=**} {
+      allow read, write: if request.auth != null &&
+                            request.auth.token.clerk_user_id == clerkUserId;
+    }
+    
+    // Allow room members to access room resources
+    match /rooms/{roomId}/{allPaths=**} {
+      allow read: if request.auth != null &&
+                     request.auth.token.clerk_user_id in 
+                     firestore.get(/databases/(default)/documents/studyRooms/$(roomId)).data.members;
+      
+      allow write: if request.auth != null &&
+                      request.auth.token.clerk_user_id == 
+                      firestore.get(/databases/(default)/documents/studyRooms/$(roomId)).data.hostId;
+    }
+    
+    // Public resources (avatars, etc.)
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}
