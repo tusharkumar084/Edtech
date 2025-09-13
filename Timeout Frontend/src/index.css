@@ -87,18 +87,22 @@
 
   /* Glass Effect Utilities */
   .glass {
-    background: hsl(var(--glass) / 0.8);
-    border: 1px solid hsl(var(--glass-border));
-    backdrop-filter: blur(16px);
-    box-shadow: var(--shadow-glass);
+    background: hsl(var(--glass) / 0.8) !important;
+    border: 1px solid hsl(var(--glass-border)) !important;
+    backdrop-filter: blur(16px) !important;
+    box-shadow: var(--shadow-glass) !important;
   }
 
   .hero-gradient {
-    background: var(--gradient-hero);
+    background: var(--gradient-hero) !important;
+  }
+
+  .bg-gradient-primary {
+    background: var(--gradient-primary) !important;
   }
 
   .glow {
-    box-shadow: var(--shadow-glow);
+    box-shadow: var(--shadow-glow) !important;
   }
 
   /* Animation Classes */
@@ -111,96 +115,155 @@
   }
 
   /* Clerk Component Styling - Match TimeOut Design */
-  .clerk-auth-container .cl-rootBox {
-    width: 100%;
+  .cl-rootBox {
+    width: 100% !important;
   }
 
-  .clerk-auth-container .cl-card {
+  .cl-card {
     background: transparent !important;
     box-shadow: none !important;
     border: none !important;
+    border-radius: var(--radius) !important;
   }
 
-  .clerk-auth-container .cl-headerTitle {
+  .cl-headerTitle {
     color: hsl(var(--foreground)) !important;
     font-size: 1.5rem !important;
     font-weight: 600 !important;
   }
 
-  .clerk-auth-container .cl-headerSubtitle {
+  .cl-headerSubtitle {
     color: hsl(var(--muted-foreground)) !important;
   }
 
-  .clerk-auth-container .cl-socialButtonsBlockButton {
-    background: hsl(var(--glass)) !important;
+  .cl-socialButtonsBlockButton {
+    background: hsl(var(--glass) / 0.8) !important;
     border: 1px solid hsl(var(--glass-border)) !important;
     color: hsl(var(--foreground)) !important;
-    backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(16px) !important;
+    border-radius: var(--radius-sm) !important;
+    transition: var(--transition-smooth) !important;
   }
 
-  .clerk-auth-container .cl-socialButtonsBlockButton:hover {
+  .cl-socialButtonsBlockButton:hover {
     background: hsl(var(--glass) / 0.6) !important;
+    transform: translateY(-1px) !important;
   }
 
-  .clerk-auth-container .cl-formButtonPrimary {
+  .cl-formButtonPrimary {
     background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow))) !important;
     border: none !important;
     color: hsl(var(--primary-foreground)) !important;
+    border-radius: var(--radius-sm) !important;
+    font-weight: 600 !important;
+    box-shadow: var(--shadow-glow) !important;
+    transition: var(--transition-bounce) !important;
   }
 
-  .clerk-auth-container .cl-formButtonPrimary:hover {
+  .cl-formButtonPrimary:hover {
     background: linear-gradient(135deg, hsl(var(--primary) / 0.9), hsl(var(--primary-glow) / 0.9)) !important;
+    transform: scale(1.02) !important;
+    box-shadow: 0 0 60px hsl(var(--primary-glow) / 0.4) !important;
   }
 
-  .clerk-auth-container .cl-formFieldInput {
-    background: hsl(var(--glass)) !important;
+  .cl-formFieldInput {
+    background: hsl(var(--glass) / 0.8) !important;
     border: 1px solid hsl(var(--glass-border)) !important;
     color: hsl(var(--foreground)) !important;
-    backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(16px) !important;
+    border-radius: var(--radius-sm) !important;
+    transition: var(--transition-smooth) !important;
   }
 
-  .clerk-auth-container .cl-formFieldLabel {
+  .cl-formFieldInput:focus {
+    border-color: hsl(var(--primary)) !important;
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.3) !important;
+  }
+
+  .cl-formFieldLabel {
+    color: hsl(var(--foreground)) !important;
+    font-weight: 500 !important;
+  }
+
+  .cl-identityPreviewText {
     color: hsl(var(--foreground)) !important;
   }
 
-  .clerk-auth-container .cl-identityPreviewText {
-    color: hsl(var(--foreground)) !important;
-  }
-
-  .clerk-auth-container .cl-identityPreviewEditButton {
+  .cl-identityPreviewEditButton {
     color: hsl(var(--primary)) !important;
   }
 
-  .clerk-auth-container .cl-identityPreviewEditButton:hover {
+  .cl-identityPreviewEditButton:hover {
     color: hsl(var(--primary-glow)) !important;
   }
 
-  .clerk-auth-container .cl-formHeaderTitle {
+  .cl-formHeaderTitle {
     color: hsl(var(--foreground)) !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
   }
 
-  .clerk-auth-container .cl-formHeaderSubtitle {
+  .cl-formHeaderSubtitle {
     color: hsl(var(--muted-foreground)) !important;
   }
 
-  .clerk-auth-container .cl-footerActionText {
+  .cl-footerActionText {
     color: hsl(var(--muted-foreground)) !important;
   }
 
-  .clerk-auth-container .cl-footerActionLink {
+  .cl-footerActionLink {
     color: hsl(var(--primary)) !important;
+    font-weight: 500 !important;
   }
 
-  .clerk-auth-container .cl-footerActionLink:hover {
+  .cl-footerActionLink:hover {
     color: hsl(var(--primary-glow)) !important;
   }
 
-  .clerk-auth-container .cl-dividerLine {
+  .cl-dividerLine {
     background: hsl(var(--border)) !important;
   }
 
-  .clerk-auth-container .cl-dividerText {
+  .cl-dividerText {
     color: hsl(var(--muted-foreground)) !important;
     background: hsl(var(--card)) !important;
+  }
+
+  /* Hide Clerk's development mode banner */
+  .cl-internal-b3fm6y {
+    display: none !important;
+  }
+
+  /* Style Clerk's loading spinner */
+  .cl-spinner {
+    border-color: hsl(var(--primary)) !important;
+  }
+
+  /* Fix Clerk's error messages */
+  .cl-formFieldErrorText {
+    color: hsl(var(--destructive)) !important;
+  }
+
+  /* Fix Clerk's success messages */
+  .cl-formFieldSuccessText {
+    color: hsl(var(--success)) !important;
+  }
+
+  /* Style Clerk's social buttons properly */
+  .cl-socialButtonsBlockButton__google {
+    background: hsl(var(--card)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    color: hsl(var(--foreground)) !important;
+  }
+
+  .cl-socialButtonsBlockButton__google:hover {
+    background: hsl(var(--muted)) !important;
+  }
+
+  /* Fix any remaining Clerk components */
+  .cl-internal-b3fm6y,
+  .cl-dev-mode-banner,
+  .cl-brand {
+    display: none !important;
   }
 }

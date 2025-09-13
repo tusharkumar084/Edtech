@@ -69,46 +69,54 @@ export const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
           <Card className="glass p-8 space-y-6">
             {isClerkAvailable && useClerk ? (
               // Clerk Authentication
-              <div className="clerk-auth-container">
+              <div className="w-full">
                 {isSignUp ? (
                   <SignUp 
                     appearance={{
+                      baseTheme: undefined,
+                      variables: {
+                        colorPrimary: "hsl(var(--primary))",
+                        colorBackground: "transparent",
+                        colorInputBackground: "hsl(var(--glass) / 0.8)",
+                        colorText: "hsl(var(--foreground))",
+                        borderRadius: "var(--radius-sm)"
+                      },
                       elements: {
                         rootBox: "w-full",
-                        card: "bg-transparent shadow-none border-none",
-                        headerTitle: "text-foreground",
+                        card: "bg-transparent shadow-none border-none p-0",
+                        headerTitle: "text-foreground text-xl font-semibold",
                         headerSubtitle: "text-muted-foreground",
-                        socialButtonsBlockButton: "glass border border-border hover:bg-glass/60 text-foreground",
-                        formButtonPrimary: "bg-gradient-primary hover:bg-gradient-primary/90 border-none",
-                        formFieldInput: "glass border border-border bg-background/50 text-foreground",
-                        formFieldLabel: "text-foreground",
-                        identityPreviewText: "text-foreground",
-                        identityPreviewEditButton: "text-primary hover:text-primary-glow",
-                        formHeaderTitle: "text-foreground",
-                        formHeaderSubtitle: "text-muted-foreground",
+                        socialButtonsBlockButton: "glass border border-border hover:bg-glass/60 text-foreground rounded-lg transition-smooth hover:scale-[1.02]",
+                        formButtonPrimary: "bg-gradient-primary hover:bg-gradient-primary/90 border-none rounded-lg font-semibold shadow-glow hover:shadow-xl hover:scale-[1.02] transition-bounce",
+                        formFieldInput: "glass border border-border bg-background/50 text-foreground rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/30",
+                        formFieldLabel: "text-foreground font-medium",
                         footerActionText: "text-muted-foreground",
-                        footerActionLink: "text-primary hover:text-primary-glow"
+                        footerActionLink: "text-primary hover:text-primary-glow font-medium transition-smooth"
                       }
                     }}
                   />
                 ) : (
                   <SignIn 
                     appearance={{
+                      baseTheme: undefined,
+                      variables: {
+                        colorPrimary: "hsl(var(--primary))",
+                        colorBackground: "transparent", 
+                        colorInputBackground: "hsl(var(--glass) / 0.8)",
+                        colorText: "hsl(var(--foreground))",
+                        borderRadius: "var(--radius-sm)"
+                      },
                       elements: {
                         rootBox: "w-full",
-                        card: "bg-transparent shadow-none border-none",
-                        headerTitle: "text-foreground",
+                        card: "bg-transparent shadow-none border-none p-0",
+                        headerTitle: "text-foreground text-xl font-semibold", 
                         headerSubtitle: "text-muted-foreground",
-                        socialButtonsBlockButton: "glass border border-border hover:bg-glass/60 text-foreground",
-                        formButtonPrimary: "bg-gradient-primary hover:bg-gradient-primary/90 border-none",
-                        formFieldInput: "glass border border-border bg-background/50 text-foreground",
-                        formFieldLabel: "text-foreground",
-                        identityPreviewText: "text-foreground",
-                        identityPreviewEditButton: "text-primary hover:text-primary-glow",
-                        formHeaderTitle: "text-foreground",
-                        formHeaderSubtitle: "text-muted-foreground",
+                        socialButtonsBlockButton: "glass border border-border hover:bg-glass/60 text-foreground rounded-lg transition-smooth hover:scale-[1.02]",
+                        formButtonPrimary: "bg-gradient-primary hover:bg-gradient-primary/90 border-none rounded-lg font-semibold shadow-glow hover:shadow-xl hover:scale-[1.02] transition-bounce",
+                        formFieldInput: "glass border border-border bg-background/50 text-foreground rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/30",
+                        formFieldLabel: "text-foreground font-medium",
                         footerActionText: "text-muted-foreground",
-                        footerActionLink: "text-primary hover:text-primary-glow"
+                        footerActionLink: "text-primary hover:text-primary-glow font-medium transition-smooth"
                       }
                     }}
                   />
@@ -190,18 +198,6 @@ export const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
                 )}
               </div>
             )}
-
-            <div className="text-center">
-              <button
-                onClick={() => setIsSignUp(!isSignUp)}
-                className="text-sm text-primary hover:text-primary-glow transition-smooth"
-              >
-                {isSignUp 
-                  ? "Already have an account? Sign in" 
-                  : "Don't have an account? Sign up"
-                }
-              </button>
-            </div>
           </Card>
 
           {/* Features Preview */}
