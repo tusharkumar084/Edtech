@@ -1,13 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Play, Pause, Square, Plus, BookOpen, Clock } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Play, Pause, Square, Plus, BookOpen, Clock, CheckCircle } from "lucide-react";
 
 export const StudyTab = () => {
-  const [timer, setTimer] = useState(25 * 60); // 25 minutes in seconds
-  const [isRunning, setIsRunning] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  // Initialize from localStorage or defaults
+  const [timer, setTimer] = useState(() => {
+    const saved = localStorage.getItem('studyTimer');
+    return saved ? JSON.parse(saved).timer : 25 * 60;
+  });
+  const [isRunning, setIsRunning] = useState(() => {
+    const saved = localStorage.getItem('studyTimer');
+    return saved ? JSON.parse(saved).isRunning : false;
+  });
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(() => {
+    const saved = localStorage.getItem('studyTimer');
+    return saved ? JSON.parse(saved).selectedSubject : null;
+  });
+  const [originalDuration, setOriginalDuration] = useState(() => {
+    const saved = localStorage.getItem('studyTimer');
+    return saved ? JSON.parse(saved).originalDuration : 25 * 60;
+  });
+  const [isCompleted, setIsCompleted] = useState(false); // Don't persist completion state
+  const [showCompletionAlert, setShowCompletionAlert] = useState(false); // Don't persist alert state
+
+  // Save state to localStorage whenever key states change
+  useEffect(() => {
+    const timerState = {
+      timer,
+      isRunning,
+      selectedSubject,
+      originalDuration,
+      lastSaved: Date.now()
+    };
+    localStorage.setItem('studyTimer', JSON.stringify(timerState));
+  }, [timer, isRunning, selectedSubject, originalDuration]);
+
+  // Restore timer accuracy on component mount if it was running
+  useEffect(() => {
+    const saved = localStorage.getItem('studyTimer');
+    if (saved) {
+      const state = JSON.parse(saved);
+      if (state.isRunning && state.lastSaved) {
+        const elapsed = Math.floor((Date.now() - state.lastSaved) / 1000);
+        const newTimer = Math.max(0, state.timer - elapsed);
+        setTimer(newTimer);
+        if (newTimer === 0) {
+          setIsRunning(false);
+          setIsCompleted(true);
+        }
+      }
+    }
+  }, []); // Only run on mount
 
   // Mock subjects data
   const subjects = [
@@ -17,6 +63,53 @@ export const StudyTab = () => {
     { name: "Chemistry", totalTime: "45m", color: "bg-destructive" },
   ];
 
+  // Simple timer countdown effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    
+    if (isRunning && timer > 0) {
+      interval = setInterval(() => {
+        setTimer(prev => {
+          const newTime = Math.max(0, prev - 1);
+          if (newTime === 0) {
+            setIsCompleted(true);
+          }
+          return newTime;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isRunning, timer]);
+
+  // Handle timer completion in separate effect
+  useEffect(() => {
+    if (isCompleted) {
+      setIsRunning(false);
+      setIsCompleted(false);
+      setShowCompletionAlert(true);
+      
+      // Play completion sound (if supported)
+      try {
+        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ2/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEcBzuZ');
+        audio.play().catch(() => {
+          // Silent fail if audio doesn't work
+        });
+      } catch (error) {
+        // Silent fail if audio creation fails
+      }
+      
+      // Auto-hide alert after 10 seconds
+      setTimeout(() => {
+        setShowCompletionAlert(false);
+      }, 10000);
+    }
+  }, [isCompleted]);
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -24,21 +117,26 @@ export const StudyTab = () => {
   };
 
   const handleStart = () => {
-    if (selectedSubject) {
+    if (selectedSubject && timer > 0) {
       setIsRunning(true);
-      // TODO: Start timer countdown
     }
   };
 
   const handlePause = () => {
     setIsRunning(false);
-    // TODO: Pause timer
   };
 
   const handleStop = () => {
     setIsRunning(false);
-    setTimer(25 * 60);
-    // TODO: Log study session
+    setTimer(originalDuration); // FIXED: Reset to original duration, not hardcoded 25 minutes
+  };
+
+  const setTimerPreset = (minutes: number) => {
+    if (!isRunning) {
+      const seconds = minutes * 60;
+      setTimer(seconds);
+      setOriginalDuration(seconds); // Remember the selected duration
+    }
   };
 
   return (
@@ -48,6 +146,25 @@ export const StudyTab = () => {
         <h1 className="text-2xl font-bold text-foreground">Study Timer</h1>
         <p className="text-muted-foreground">Track your focused study sessions</p>
       </div>
+
+      {/* Timer Completion Alert */}
+      {showCompletionAlert && (
+        <Alert className="border-green-500 bg-green-50 dark:bg-green-950">
+          <CheckCircle className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-800 dark:text-green-200">
+            <strong>🎉 Study Session Complete!</strong> Great work! You've successfully completed your {Math.floor(originalDuration / 60)}-minute study session
+            {selectedSubject && ` for ${selectedSubject}`}. Take a well-deserved break!
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="ml-4"
+              onClick={() => setShowCompletionAlert(false)}
+            >
+              Dismiss
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Timer Section */}
       <Card className="glass p-8">
@@ -95,21 +212,24 @@ export const StudyTab = () => {
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => setTimer(25 * 60)}
+              onClick={() => setTimerPreset(25)}
+              disabled={isRunning}
             >
               25m
             </Button>
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => setTimer(45 * 60)}
+              onClick={() => setTimerPreset(45)}
+              disabled={isRunning}
             >
               45m
             </Button>
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => setTimer(60 * 60)}
+              onClick={() => setTimerPreset(60)}
+              disabled={isRunning}
             >
               60m
             </Button>

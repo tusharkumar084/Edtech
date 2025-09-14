@@ -1,7 +1,7 @@
 {
   "name": "timeout-backend",
   "version": "1.0.0",
-  "description": "TimeOut study rooms backend with Firebase and Clerk integration",
+  "description": "TimeOut study app backend with Firebase",
   "main": "index.js",
   "scripts": {
     "build": "cd functions && npm run build",
@@ -19,8 +19,7 @@
   },
   "keywords": [
     "firebase",
-    "clerk",
-    "study-rooms",
+    "study-app",
     "real-time",
     "typescript"
   ],

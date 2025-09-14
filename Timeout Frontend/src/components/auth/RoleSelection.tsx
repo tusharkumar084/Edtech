@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useClerk } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { GraduationCap, Users, Presentation, BookOpen, LogOut } from "lucide-react";
@@ -11,14 +10,6 @@ interface RoleSelectionProps {
 
 export const RoleSelection = ({ userName, onRoleSelect }: RoleSelectionProps) => {
   const [selectedRole, setSelectedRole] = useState<"student" | "teacher" | null>(null);
-  
-  // Try to get Clerk instance for sign out
-  let clerk = null;
-  try {
-    clerk = useClerk();
-  } catch (error) {
-    // Clerk not available, no sign out option
-  }
 
   const handleContinue = () => {
     if (selectedRole) {
@@ -27,9 +18,8 @@ export const RoleSelection = ({ userName, onRoleSelect }: RoleSelectionProps) =>
   };
 
   const handleSignOut = () => {
-    if (clerk) {
-      clerk.signOut();
-    }
+    // Demo mode - reload page to return to auth
+    window.location.reload();
   };
 
   return (
@@ -39,19 +29,17 @@ export const RoleSelection = ({ userName, onRoleSelect }: RoleSelectionProps) =>
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
       
       {/* Sign Out Button */}
-      {clerk && (
-        <div className="absolute top-4 right-4 z-20">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleSignOut}
-            className="glass"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Sign Out
-          </Button>
-        </div>
-      )}
+      <div className="absolute top-4 right-4 z-20">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleSignOut}
+          className="glass"
+        >
+          <LogOut className="w-4 h-4 mr-2" />
+          Sign Out
+        </Button>
+      </div>
       
       <div className="relative z-10 flex min-h-screen items-center justify-center p-4">
         <div className="w-full max-w-2xl space-y-8">

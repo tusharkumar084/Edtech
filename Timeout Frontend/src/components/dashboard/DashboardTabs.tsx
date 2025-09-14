@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Calendar, Clock, Users, BookOpen, LogOut } from "lucide-react";
-import { useClerk } from "@clerk/clerk-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -23,21 +22,9 @@ interface DashboardTabsProps {
 }
 
 export const DashboardTabs = ({ activeTab, onTabChange }: DashboardTabsProps) => {
-  // Try to get Clerk instance for sign out
-  let clerk = null;
-  try {
-    clerk = useClerk();
-  } catch (error) {
-    // Clerk not available, no sign out option
-  }
-
   const handleSignOut = () => {
-    if (clerk) {
-      clerk.signOut();
-    } else {
-      // Fallback for demo mode - reload page
-      window.location.reload();
-    }
+    // Demo mode - reload page to return to auth
+    window.location.reload();
   };
 
   return (

@@ -1,9 +1,16 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, Plus, Camera, Video } from "lucide-react";
+import { GroupSession } from "@/components/group/GroupSession";
 
 export const GroupsTab = () => {
+  const [activeGroupSession, setActiveGroupSession] = useState<{
+    groupId: string;
+    groupName: string;
+  } | null>(null);
+
   // Mock groups data
   const groups = [
     {
@@ -28,6 +35,28 @@ export const GroupsTab = () => {
       description: "For the midnight studiers"
     },
   ];
+
+  const handleEnterGroup = (groupName: string, index: number) => {
+    setActiveGroupSession({
+      groupId: `group-${index}`,
+      groupName: groupName
+    });
+  };
+
+  const handleLeaveGroup = () => {
+    setActiveGroupSession(null);
+  };
+
+  // If user is in a group session, show the GroupSession component
+  if (activeGroupSession) {
+    return (
+      <GroupSession
+        groupName={activeGroupSession.groupName}
+        groupId={activeGroupSession.groupId}
+        onLeaveGroup={handleLeaveGroup}
+      />
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -68,7 +97,11 @@ export const GroupsTab = () => {
                   </div>
                 </div>
               </div>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => handleEnterGroup(group.name, index)}
+              >
                 Enter Group
               </Button>
             </div>

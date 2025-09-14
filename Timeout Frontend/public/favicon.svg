@@ -1,0 +1,25 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="14" fill="#41A670"/>
+  
+  <!-- Clock face -->
+  <circle cx="16" cy="16" r="11" fill="#5BC584" stroke="#215442" stroke-width="1"/>
+  
+  <!-- Clock hands -->
+  <line x1="16" y1="16" x2="16" y2="8" stroke="#215442" stroke-width="2" stroke-linecap="round"/>
+  <line x1="16" y1="16" x2="22" y2="16" stroke="#215442" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Hour marks -->
+  <line x1="16" y1="6" x2="16" y2="8" stroke="#215442" stroke-width="1"/>
+  <line x1="16" y1="24" x2="16" y2="26" stroke="#215442" stroke-width="1"/>
+  <line x1="26" y1="16" x2="24" y2="16" stroke="#215442" stroke-width="1"/>
+  <line x1="8" y1="16" x2="6" y2="16" stroke="#215442" stroke-width="1"/>
+  
+  <!-- Center dot -->
+  <circle cx="16" cy="16" r="1" fill="#215442"/>
+  
+  <!-- Alert badge -->
+  <circle cx="24" cy="24" r="4" fill="#215442"/>
+  <rect x="22.5" y="21" width="3" height="4" rx="1.5" fill="#5BC584"/>
+  <circle cx="24" cy="26.5" r="0.8" fill="#5BC584"/>
+</svg>

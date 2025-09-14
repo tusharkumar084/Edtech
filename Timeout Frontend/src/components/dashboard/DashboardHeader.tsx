@@ -1,51 +1,20 @@
-import { useAuth, useUser, useClerk } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LogOut, User, Settings } from "lucide-react";
 
 export const DashboardHeader = () => {
-  // Try to get user data with fallback
-  let user = null;
-  let isLoaded = false;
-  let clerk = null;
-
-  try {
-    const auth = useAuth();
-    const userData = useUser();
-    clerk = useClerk();
-    
-    isLoaded = auth.isLoaded && userData.isLoaded;
-    user = userData.user;
-  } catch (error) {
-    // Clerk not available, use fallback
-    isLoaded = true;
-    user = {
-      firstName: "Demo",
-      lastName: "User",
-      primaryEmailAddress: { emailAddress: "demo@timeout.app" },
-      imageUrl: null
-    };
-  }
-
-  const handleSignOut = () => {
-    if (clerk) {
-      clerk.signOut();
-    } else {
-      // Fallback for demo mode - reload page
-      window.location.reload();
-    }
+  // Demo mode - use mock user data
+  const user = {
+    firstName: "Demo",
+    lastName: "User",
+    primaryEmailAddress: { emailAddress: "demo@timeout.app" },
+    imageUrl: null
   };
 
-  if (!isLoaded) {
-    return (
-      <div className="p-4 border-b border-border/20">
-        <div className="flex items-center justify-between">
-          <div className="h-8 w-32 bg-muted/50 rounded animate-pulse" />
-          <div className="h-8 w-24 bg-muted/50 rounded animate-pulse" />
-        </div>
-      </div>
-    );
-  }
+  const handleSignOut = () => {
+    // Demo mode - reload page to return to auth
+    window.location.reload();
+  };
 
   const displayName = user?.firstName && user?.lastName 
     ? `${user.firstName} ${user.lastName}`

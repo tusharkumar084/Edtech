@@ -1,73 +1,173 @@
-# Welcome to your Lovable project
+# 🎯 TimeOut - Focus & Study App
 
-## Project info
+[![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-7-purple.svg)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-teal.svg)](https://tailwindcss.com/)
 
-**URL**: https://lovable.dev/projects/f47347d9-5925-41fc-b259-d1779e890ca7
+A modern, full-featured study application that helps students maintain focus and collaborate through virtual study sessions. Built with React 18, TypeScript, and a robust tech stack for optimal performance and user experience.
 
-## How can I edit this code?
+## ✨ Features
 
-There are several ways of editing your application.
+### 🎥 **Group Study Sessions**
+- Real-time video integration for virtual study groups
+- Automated check-in system with photo capture
+- Live participant tracking and status updates
+- Session timer with persistent state management
 
-**Use Lovable**
+### ⏱️ **Personal Study Timer**
+- Customizable study session durations (15min, 25min, 45min, 1hr)
+- Persistent progress tracking across browser sessions
+- Audio notifications for session completion
+- Automatic reset functionality
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f47347d9-5925-41fc-b259-d1779e890ca7) and start prompting.
+### 🔐 **Authentication System**
+- Clerk-powered secure authentication
+- Demo mode for immediate testing
+- User profile management
+- Role-based access control
 
-Changes made via Lovable will be committed automatically to this repo.
+### 📊 **Progress Tracking**
+- Study session history and analytics
+- Check-in completion tracking
+- Time-based progress visualization
+- Achievement system
 
-**Use your preferred IDE**
+### 🎨 **Modern UI/UX**
+- Responsive design for all screen sizes
+- Accessibility-first component architecture
+- Dark/light theme support
+- Clean, professional interface using shadcn/ui
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🛠️ Technologies Used
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### **Frontend Stack**
+- **React 18** - Modern React with concurrent features
+- **TypeScript** - Type-safe development
+- **Vite** - Lightning-fast build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **shadcn/ui** - High-quality, accessible component library
 
-Follow these steps:
+### **Authentication & Backend**
+- **Clerk** - Complete authentication solution
+- **Firebase Functions** - Serverless backend functions
+- **Firestore** - NoSQL database for real-time data
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### **Development Tools**
+- **ESLint** - Code quality and consistency
+- **PostCSS** - CSS processing and optimization
+- **Vite Plugin React** - Optimized React development
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🚀 Quick Start
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Prerequisites
+- **Node.js** 18.0.0 or higher
+- **npm** 9.0.0 or higher
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/your-username/timeout-study-app.git
+cd timeout-study-app
+```
+
+2. **Install dependencies**
+```bash
+npm install
+```
+
+3. **Environment Setup**
+Create a `.env.local` file in the root directory:
+```env
+# Authentication (Optional - app runs in demo mode without these)
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+
+# Firebase Configuration (Optional for demo)
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
+VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+VITE_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+4. **Start development server**
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📜 Available Scripts
 
-**Use GitHub Codespaces**
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Build optimized production bundle |
+| `npm run build:dev` | Build development bundle with source maps |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | Run ESLint code quality checks |
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📁 Project Structure
 
-## What technologies are used for this project?
+```
+src/
+├── components/
+│   ├── auth/              # Authentication flows
+│   ├── dashboard/         # Main dashboard and navigation
+│   │   └── tabs/          # Study, Groups, Classes, Schedule tabs
+│   ├── group/             # Group study session components
+│   └── ui/                # Reusable UI components (shadcn/ui)
+├── config/                # App configuration and constants
+├── hooks/                 # Custom React hooks
+├── lib/                   # Utility functions and helpers
+├── pages/                 # Top-level page components
+└── assets/                # Static assets and images
+```
 
-This project is built with:
+## 🔧 Configuration
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Demo Mode
+The app runs in demo mode by default, allowing immediate testing without authentication setup. Simply start the dev server and begin exploring features.
 
-## How can I deploy this project?
+### Production Setup
+For production deployment:
 
-Simply open [Lovable](https://lovable.dev/projects/f47347d9-5925-41fc-b259-d1779e890ca7) and click on Share -> Publish.
+1. Set up Clerk authentication project
+2. Configure Firebase project and functions
+3. Add environment variables
+4. Run `npm run build`
+5. Deploy the `dist/` folder to your hosting platform
 
-## Can I connect a custom domain to my Lovable project?
+## 📱 Browser Support
 
-Yes, you can!
+- **Chrome** 88+
+- **Firefox** 78+
+- **Safari** 14+
+- **Edge** 88+
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🤝 Contributing
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built with [shadcn/ui](https://ui.shadcn.com/) components
+- Icons from [Lucide React](https://lucide.dev/)
+- Authentication powered by [Clerk](https://clerk.com/)
+- Backend services by [Firebase](https://firebase.google.com/)
+
+---
+
+<p align="center">Made with ❤️ for focused learning</p>

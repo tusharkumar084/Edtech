@@ -1,0 +1,33 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="200" fill="#41A670"/>
+  <circle cx="256" cy="256" r="190" fill="#5BC584"/>
+  
+  <!-- Clock face -->
+  <circle cx="256" cy="256" r="160" fill="#41A670" stroke="#215442" stroke-width="8"/>
+  
+  <!-- Clock hands -->
+  <line x1="256" y1="256" x2="256" y2="140" stroke="#215442" stroke-width="8" stroke-linecap="round"/>
+  <line x1="256" y1="256" x2="340" y2="256" stroke="#215442" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Hour marks -->
+  <line x1="256" y1="120" x2="256" y2="140" stroke="#215442" stroke-width="4"/>
+  <line x1="256" y1="372" x2="256" y2="392" stroke="#215442" stroke-width="4"/>
+  <line x1="392" y1="256" x2="372" y2="256" stroke="#215442" stroke-width="4"/>
+  <line x1="140" y1="256" x2="120" y2="256" stroke="#215442" stroke-width="4"/>
+  
+  <!-- Diagonal marks -->
+  <line x1="328.28" y1="183.72" x2="314.14" y2="197.86" stroke="#215442" stroke-width="3"/>
+  <line x1="183.72" y1="183.72" x2="197.86" y2="197.86" stroke="#215442" stroke-width="3"/>
+  <line x1="328.28" y1="328.28" x2="314.14" y2="314.14" stroke="#215442" stroke-width="3"/>
+  <line x1="183.72" y1="328.28" x2="197.86" y2="314.14" stroke="#215442" stroke-width="3"/>
+  
+  <!-- Center dot -->
+  <circle cx="256" cy="256" r="12" fill="#215442"/>
+  
+  <!-- Alert badge -->
+  <circle cx="380" cy="380" r="50" fill="#215442"/>
+  <circle cx="380" cy="380" r="40" fill="#5BC584"/>
+  <rect x="372" y="355" width="16" height="35" rx="8" fill="#215442"/>
+  <circle cx="380" cy="400" r="8" fill="#215442"/>
+</svg>

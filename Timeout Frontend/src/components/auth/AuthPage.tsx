@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { SignIn, SignUp, useAuth } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Chrome, Mail, Clock, Users, Target, BookOpen } from "lucide-react";
-import timeoutLogo from "@/assets/timeout-logo.png";
+import timeoutLogo from "@/assets/time-out-1935482448.png";
 
 interface AuthPageProps {
   onAuthSuccess?: () => void;
@@ -15,17 +14,8 @@ export const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [useClerk, setUseClerk] = useState(true);
 
-  // Try to use Clerk auth hook
-  let isClerkAvailable = true;
-  try {
-    useAuth();
-  } catch (error) {
-    isClerkAvailable = false;
-  }
-
-  // Fallback handlers for demo mode
+  // Demo authentication handlers
   const handleGoogleAuth = () => {
     console.log("Google auth clicked - demo mode");
     onAuthSuccess?.();
@@ -67,64 +57,8 @@ export const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
 
           {/* Auth Card */}
           <Card className="glass p-8 space-y-6">
-            {isClerkAvailable && useClerk ? (
-              // Clerk Authentication
-              <div className="clerk-auth-container">
-                {isSignUp ? (
-                  <SignUp 
-                    appearance={{
-                      elements: {
-                        rootBox: "w-full",
-                        card: "bg-transparent shadow-none border-none",
-                        headerTitle: "text-foreground",
-                        headerSubtitle: "text-muted-foreground",
-                        socialButtonsBlockButton: "glass border border-border hover:bg-glass/60 text-foreground",
-                        formButtonPrimary: "bg-gradient-primary hover:bg-gradient-primary/90 border-none",
-                        formFieldInput: "glass border border-border bg-background/50 text-foreground",
-                        formFieldLabel: "text-foreground",
-                        identityPreviewText: "text-foreground",
-                        identityPreviewEditButton: "text-primary hover:text-primary-glow",
-                        formHeaderTitle: "text-foreground",
-                        formHeaderSubtitle: "text-muted-foreground",
-                        footerActionText: "text-muted-foreground",
-                        footerActionLink: "text-primary hover:text-primary-glow"
-                      }
-                    }}
-                  />
-                ) : (
-                  <SignIn 
-                    appearance={{
-                      elements: {
-                        rootBox: "w-full",
-                        card: "bg-transparent shadow-none border-none",
-                        headerTitle: "text-foreground",
-                        headerSubtitle: "text-muted-foreground",
-                        socialButtonsBlockButton: "glass border border-border hover:bg-glass/60 text-foreground",
-                        formButtonPrimary: "bg-gradient-primary hover:bg-gradient-primary/90 border-none",
-                        formFieldInput: "glass border border-border bg-background/50 text-foreground",
-                        formFieldLabel: "text-foreground",
-                        identityPreviewText: "text-foreground",
-                        identityPreviewEditButton: "text-primary hover:text-primary-glow",
-                        formHeaderTitle: "text-foreground",
-                        formHeaderSubtitle: "text-muted-foreground",
-                        footerActionText: "text-muted-foreground",
-                        footerActionLink: "text-primary hover:text-primary-glow"
-                      }
-                    }}
-                  />
-                )}
-                <div className="text-center mt-4">
-                  <button
-                    onClick={() => setUseClerk(false)}
-                    className="text-xs text-muted-foreground hover:text-primary transition-smooth"
-                  >
-                    Use demo mode instead
-                  </button>
-                </div>
-              </div>
-            ) : (
-              // Fallback Authentication UI
-              <div className="space-y-4">
+            {/* Demo Authentication UI */}
+            <div className="space-y-4">
                 <Button
                   variant="google"
                   size="lg"
@@ -177,19 +111,7 @@ export const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
                     {isSignUp ? "Sign up with Email" : "Sign in with Email"}
                   </Button>
                 </div>
-
-                {isClerkAvailable && (
-                  <div className="text-center">
-                    <button
-                      onClick={() => setUseClerk(true)}
-                      className="text-xs text-muted-foreground hover:text-primary transition-smooth"
-                    >
-                      Use Clerk authentication instead
-                    </button>
-                  </div>
-                )}
               </div>
-            )}
 
             <div className="text-center">
               <button
