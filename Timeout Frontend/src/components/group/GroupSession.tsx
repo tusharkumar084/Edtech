@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useUser } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,9 +11,12 @@ import {
   Settings,
   Play,
   Pause,
-  AlertCircle 
+  AlertCircle,
+  BookOpen,
+  Coffee
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { getRoomDetails, leaveRoom, updateParticipantStatus } from "@/config/firebase";
 
 interface GroupSessionProps {
   groupName: string;
@@ -45,10 +49,16 @@ const VIDEO_CONSTRAINTS = {
 } as const;
 
 export function GroupSession({ groupName, groupId, onLeaveGroup }: GroupSessionProps) {
+  const { user } = useUser();
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [cameraEnabled, setCameraEnabled] = useState(false);
   const [showCheckInPrompt, setShowCheckInPrompt] = useState(false);
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [roomData, setRoomData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [userStatus, setUserStatus] = useState<'studying' | 'away'>('studying');
   const [nextCheckIn, setNextCheckIn] = useState<Date | null>(null);
   const [cameraError, setCameraError] = useState<CameraError | null>(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
@@ -214,30 +224,50 @@ export function GroupSession({ groupName, groupId, onLeaveGroup }: GroupSessionP
     };
   }, [cameraEnabled]); // FIXED: Only depend on cameraEnabled, not streamRef.current
 
-  // Mock participants data  
-  const [participants] = useState<Participant[]>([
-    {
-      id: "user1",
-      name: "Alex Chen",
-      isStudying: true,
-      subject: "Mathematics",
-      lastCheckIn: new Date(Date.now() - 5 * 60 * 1000)
-    },
-    {
-      id: "user2", 
-      name: "Sarah Kim",
-      isStudying: true,
-      subject: "Physics",
-      lastCheckIn: new Date(Date.now() - 2 * 60 * 1000)
-    },
-    {
-      id: "user3",
-      name: "Mike Johnson", 
-      isStudying: false,
-      subject: "Chemistry",
-      lastCheckIn: new Date(Date.now() - 20 * 60 * 1000)
+  // Load room data and participants from backend
+  useEffect(() => {
+    const loadRoomData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const result = await getRoomDetails({ 
+          roomId: groupId,
+          userId: user?.id || 'demo-user'
+        });
+        
+        const roomInfo = (result.data as any).room;
+        setRoomData(roomInfo);
+        
+        // Transform participants data
+        const participantsList = Object.entries(roomInfo.participants || {}).map(([id, data]: [string, any]) => ({
+          id,
+          name: data.name || data.email || 'Unknown',
+          isStudying: data.isActive === true,
+          subject: roomInfo.subject || 'General',
+          lastCheckIn: data.joinedAt ? new Date(data.joinedAt.seconds * 1000) : new Date()
+        }));
+        
+        setParticipants(participantsList);
+        
+        // Set initial user status based on current user's isActive state
+        const currentUserId = user?.id || 'demo-user';
+        const currentUserData = roomInfo.participants?.[currentUserId];
+        if (currentUserData) {
+          setUserStatus(currentUserData.isActive ? 'studying' : 'away');
+        }
+      } catch (err) {
+        console.error('Failed to load room data:', err);
+        setError('Failed to load room details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (groupId) {
+      loadRoomData();
     }
-  ]);
+  }, [groupId, user?.id]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -278,6 +308,51 @@ export function GroupSession({ groupName, groupId, onLeaveGroup }: GroupSessionP
       }
     };
   }, [isTimerRunning]);
+
+  const handleLeaveRoom = async () => {
+    try {
+      setLoading(true);
+      
+      // Call backend leaveRoom function
+      await leaveRoom({ 
+        roomId: groupId,
+        userId: user?.id || 'demo-user'
+      });
+      
+      console.log('✅ Left room successfully');
+    } catch (err) {
+      console.error('❌ Failed to leave room:', err);
+      // Still proceed to leave locally even if backend call fails
+    } finally {
+      setLoading(false);
+      // Call the original onLeaveGroup to navigate away
+      onLeaveGroup();
+    }
+  };
+
+  const handleStatusToggle = async () => {
+    try {
+      setLoading(true);
+      const newStatus = userStatus === 'studying' ? 'away' : 'studying';
+      
+      // Update status in backend
+      await updateParticipantStatus({ 
+        roomId: groupId,
+        isActive: newStatus === 'studying',
+        userId: user?.id || 'demo-user'
+      });
+      
+      // Update local state
+      setUserStatus(newStatus);
+      
+      console.log(`✅ Status updated to: ${newStatus}`);
+    } catch (err) {
+      console.error('❌ Failed to update status:', err);
+      setError('Failed to update status');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleStartCamera = async () => {
     try {
@@ -426,20 +501,54 @@ export function GroupSession({ groupName, groupId, onLeaveGroup }: GroupSessionP
 
   return (
     <div className="p-6 space-y-6">
+      {/* Loading State */}
+      {loading && (
+        <Card className="glass p-6">
+          <div className="flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <span className="ml-3 text-muted-foreground">Loading room data...</span>
+          </div>
+        </Card>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Study Session: {groupName}</h1>
           <p className="text-muted-foreground">Group ID: {groupId}</p>
+          {roomData && (
+            <p className="text-sm text-muted-foreground">Subject: {roomData.subject || 'General'}</p>
+          )}
         </div>
         <div className="flex items-center gap-2">
+          <Button 
+            variant={userStatus === 'studying' ? 'default' : 'outline'} 
+            onClick={handleStatusToggle}
+            disabled={loading}
+            className={userStatus === 'studying' ? 'bg-success hover:bg-success/90' : ''}
+          >
+            {userStatus === 'studying' ? (
+              <BookOpen className="h-4 w-4 mr-2" />
+            ) : (
+              <Coffee className="h-4 w-4 mr-2" />
+            )}
+            {loading ? 'Updating...' : (userStatus === 'studying' ? 'Studying' : 'Away')}
+          </Button>
           <Button variant="outline">
             <Settings className="h-4 w-4 mr-2" />
             Settings
           </Button>
-          <Button variant="destructive" onClick={onLeaveGroup}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Leave Group
+          <Button variant="destructive" onClick={handleLeaveRoom} disabled={loading}>
+            <LogOut className="h-4 h-4 mr-2" />
+            {loading ? 'Leaving...' : 'Leave Group'}
           </Button>
         </div>
       </div>

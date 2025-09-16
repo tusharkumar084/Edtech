@@ -1,19 +1,34 @@
 // Firebase user handler for frontend
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, connectFirestoreEmulator } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAod0vj_GsXVVgKeScuPJBPwB3T4RjE0E0",
-  authDomain: "timeout-backend-340e2.firebaseapp.com",
-  projectId: "timeout-backend-340e2",
-  storageBucket: "timeout-backend-340e2.firebasestorage.app",
-  messagingSenderId: "176409782600",
-  appId: "1:176409782600:web:fd0068f3745ee0da302b7d",
-  measurementId: "G-B033H3NW2W"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyAod0vj_GsXVVgKeScuPJBPwB3T4RjE0E0",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "timeout-backend-340e2.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "timeout-backend-340e2",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "timeout-backend-340e2.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "176409782600",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:176409782600:web:fd0068f3745ee0da302b7d",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-B033H3NW2W"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// Connect to Firestore emulator in development
+if (import.meta.env.DEV) {
+  try {
+    connectFirestoreEmulator(db, 'localhost', 8090);
+    console.log('🔥 Connected to Firestore emulator on port 8090');
+  } catch (error) {
+    // This is expected if already connected
+    if (error.code === 'failed-precondition') {
+      console.log('🔥 Already connected to Firestore emulator');
+    } else {
+      console.warn('⚠️ Could not connect to Firestore emulator:', error);
+    }
+  }
+}
 
 // Function to ensure user exists and create if not
 export const ensureUserExists = async (clerkUser: any) => {
@@ -66,21 +81,6 @@ export const ensureUserExists = async (clerkUser: any) => {
     }
   } catch (error) {
     console.error('❌ Error ensuring user exists:', error);
-    throw error;
-  }
-};
-
-// Function to update user role
-export const updateUserRole = async (clerkUserId: string, role: 'student' | 'teacher') => {
-  try {
-    const userDocRef = doc(db, 'users', clerkUserId);
-    await setDoc(userDocRef, { 
-      role, 
-      updatedAt: new Date() 
-    }, { merge: true });
-    console.log(`✅ User role updated to: ${role}`);
-  } catch (error) {
-    console.error('❌ Error updating user role:', error);
     throw error;
   }
 };

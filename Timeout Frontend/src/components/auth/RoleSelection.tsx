@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { GraduationCap, Users, Presentation, BookOpen, LogOut } from "lucide-react";
+import { useAuth } from "@clerk/clerk-react";
 
 interface RoleSelectionProps {
   userName: string;
@@ -10,6 +11,7 @@ interface RoleSelectionProps {
 
 export const RoleSelection = ({ userName, onRoleSelect }: RoleSelectionProps) => {
   const [selectedRole, setSelectedRole] = useState<"student" | "teacher" | null>(null);
+  const { signOut } = useAuth();
 
   const handleContinue = () => {
     if (selectedRole) {
@@ -17,9 +19,14 @@ export const RoleSelection = ({ userName, onRoleSelect }: RoleSelectionProps) =>
     }
   };
 
-  const handleSignOut = () => {
-    // Demo mode - reload page to return to auth
-    window.location.reload();
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Sign out error:", error);
+      // Fallback to reload if signOut fails
+      window.location.reload();
+    }
   };
 
   return (

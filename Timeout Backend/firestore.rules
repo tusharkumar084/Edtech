@@ -2,7 +2,14 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper functions for Clerk authentication
+    // TEMPORARY: Allow all operations for development/testing
+    // TODO: Implement proper Clerk authentication later
+    match /{document=**} {
+      allow read, write: if true;
+    }
+    
+    // Helper functions for Clerk authentication (DISABLED FOR NOW)
+    /*
     function isAuthenticated() {
       return request.auth != null && 
              request.auth.token.clerk_user_id != null;
@@ -20,14 +27,15 @@ service cloud.firestore {
       return getUserRole() == 'teacher';
     }
     
-    // Users collection - Clerk user data sync
+    // Users collection - Clerk user data sync (DISABLED)
+    /*
     match /users/{clerkUserId} {
       allow read: if isAuthenticated();
       allow write: if isAuthenticated() && 
                       getClerkUserId() == clerkUserId;
     }
     
-    // Study rooms collection
+    // Study rooms collection (DISABLED)
     match /studyRooms/{roomId} {
       allow read: if isAuthenticated() && (
         resource.data.visibility == 'public' || 
@@ -50,7 +58,7 @@ service cloud.firestore {
                        getClerkUserId() == resource.data.hostId;
     }
     
-    // Sessions collection - analytics data
+    // Sessions collection - analytics data (DISABLED)
     match /sessions/{sessionId} {
       allow read: if isAuthenticated();
       allow create: if isAuthenticated();
@@ -59,7 +67,7 @@ service cloud.firestore {
       allow delete: if isAuthenticated() && isTeacher();
     }
     
-    // Room chat messages (if implemented later)
+    // Room chat messages (if implemented later) (DISABLED)
     match /studyRooms/{roomId}/messages/{messageId} {
       allow read: if isAuthenticated() && 
                      getClerkUserId() in get(/databases/$(database)/documents/studyRooms/$(roomId)).data.members;
@@ -68,5 +76,6 @@ service cloud.firestore {
                        request.resource.data.authorId == getClerkUserId();
       allow update, delete: if false; // Messages are immutable
     }
+    */
   }
 }

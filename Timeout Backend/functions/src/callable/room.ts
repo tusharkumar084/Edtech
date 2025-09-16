@@ -1,6 +1,7 @@
 import { onCall, CallableRequest } from 'firebase-functions/v2/https';
 import { HttpsError } from 'firebase-functions/v2/https';
 import { db } from '../config/firebase';
+import { APP_CONFIG } from '../config/constants';
 import { 
   StudyRoom, 
   RoomVisibility, 
@@ -64,7 +65,7 @@ export const createRoom = onCall(
       const userData = userDoc.data();
       
       // Create room document
-      const roomRef = db.collection('rooms').doc();
+      const roomRef = db.collection(APP_CONFIG.COLLECTIONS.STUDY_ROOMS).doc();
       const roomId = roomRef.id;
       
       const now = Timestamp.now();
@@ -163,7 +164,7 @@ export const joinRoom = onCall(
 
       // Use transaction to ensure consistency
       const result = await db.runTransaction(async (transaction) => {
-        const roomRef = db.collection('rooms').doc(roomId);
+        const roomRef = db.collection(APP_CONFIG.COLLECTIONS.STUDY_ROOMS).doc(roomId);
         const roomDoc = await transaction.get(roomRef);
         
         if (!roomDoc.exists) {
@@ -243,7 +244,7 @@ export const leaveRoom = onCall(
 
       // Use transaction to ensure consistency
       await db.runTransaction(async (transaction) => {
-        const roomRef = db.collection('rooms').doc(roomId);
+        const roomRef = db.collection(APP_CONFIG.COLLECTIONS.STUDY_ROOMS).doc(roomId);
         const roomDoc = await transaction.get(roomRef);
         
         if (!roomDoc.exists) {
@@ -316,7 +317,7 @@ export const getPublicRooms = onCall(
       
       const { limit = 20, subject = null } = request.data;
 
-      let query = db.collection('rooms')
+      let query = db.collection(APP_CONFIG.COLLECTIONS.STUDY_ROOMS)
         .where('visibility', '==', 'public')
         .where('status', 'in', ['waiting', 'active'])
         .orderBy('createdAt', 'desc')
@@ -369,7 +370,7 @@ export const getRoomDetails = onCall(
         throw new HttpsError('invalid-argument', 'Room ID is required');
       }
 
-      const roomDoc = await db.collection('rooms').doc(roomId).get();
+      const roomDoc = await db.collection(APP_CONFIG.COLLECTIONS.STUDY_ROOMS).doc(roomId).get();
       
       if (!roomDoc.exists) {
         throw new HttpsError('not-found', 'Room not found');
@@ -392,6 +393,66 @@ export const getRoomDetails = onCall(
         throw error;
       }
       throw new HttpsError('internal', 'Failed to get room details');
+    }
+  }
+);
+
+/**
+ * Update participant status in a room (studying/away)
+ */
+export const updateParticipantStatus = onCall(
+  {
+    timeoutSeconds: 30,
+    memory: '256MiB',
+  },
+  async (request: CallableRequest) => {
+    try {
+      const userId = getAuthenticatedUserId(request);
+      
+      const { roomId, isActive } = request.data;
+
+      if (!roomId) {
+        throw new HttpsError('invalid-argument', 'Room ID is required');
+      }
+
+      if (typeof isActive !== 'boolean') {
+        throw new HttpsError('invalid-argument', 'isActive must be a boolean');
+      }
+
+      // Use transaction to ensure consistency
+      const result = await db.runTransaction(async (transaction) => {
+        const roomRef = db.collection(APP_CONFIG.COLLECTIONS.STUDY_ROOMS).doc(roomId);
+        const roomDoc = await transaction.get(roomRef);
+        
+        if (!roomDoc.exists) {
+          throw new HttpsError('not-found', 'Room not found');
+        }
+
+        const roomData = roomDoc.data() as StudyRoom;
+
+        if (!roomData.participants[userId]) {
+          throw new HttpsError('failed-precondition', 'User is not a participant in this room');
+        }
+
+        // Update participant status
+        transaction.update(roomRef, {
+          [`participants.${userId}.isActive`]: isActive,
+          updatedAt: Timestamp.now()
+        });
+
+        return { 
+          success: true, 
+          status: isActive ? 'studying' : 'away'
+        };
+      });
+
+      return result;
+    } catch (error) {
+      console.error('Error updating participant status:', error);
+      if (error instanceof HttpsError) {
+        throw error;
+      }
+      throw new HttpsError('internal', 'Failed to update participant status');
     }
   }
 );

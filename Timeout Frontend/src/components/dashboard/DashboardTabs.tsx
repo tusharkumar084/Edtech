@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Calendar, Clock, Users, BookOpen, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@clerk/clerk-react";
 
 interface Tab {
   id: string;
@@ -22,9 +23,16 @@ interface DashboardTabsProps {
 }
 
 export const DashboardTabs = ({ activeTab, onTabChange }: DashboardTabsProps) => {
-  const handleSignOut = () => {
-    // Demo mode - reload page to return to auth
-    window.location.reload();
+  const { signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Sign out error:", error);
+      // Fallback to reload if signOut fails
+      window.location.reload();
+    }
   };
 
   return (

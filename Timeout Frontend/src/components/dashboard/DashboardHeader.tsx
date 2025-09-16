@@ -1,24 +1,33 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LogOut, User, Settings } from "lucide-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 
 export const DashboardHeader = () => {
-  // Demo mode - use mock user data
-  const user = {
+  const { signOut } = useAuth();
+  const { user } = useUser();
+
+  // Fallback to demo user if Clerk user is not available
+  const currentUser = user || {
     firstName: "Demo",
     lastName: "User",
     primaryEmailAddress: { emailAddress: "demo@timeout.app" },
     imageUrl: null
   };
 
-  const handleSignOut = () => {
-    // Demo mode - reload page to return to auth
-    window.location.reload();
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Sign out error:", error);
+      // Fallback to reload if signOut fails
+      window.location.reload();
+    }
   };
 
-  const displayName = user?.firstName && user?.lastName 
-    ? `${user.firstName} ${user.lastName}`
-    : user?.primaryEmailAddress?.emailAddress || "User";
+  const displayName = currentUser?.firstName && currentUser?.lastName 
+    ? `${currentUser.firstName} ${currentUser.lastName}`
+    : currentUser?.primaryEmailAddress?.emailAddress || "User";
 
   return (
     <div className="glass border-b border-glass-border/30 backdrop-blur-sm">
@@ -26,9 +35,9 @@ export const DashboardHeader = () => {
         <div className="flex items-center justify-between">
           {/* User Info */}
           <div className="flex items-center gap-3">
-            {user?.imageUrl ? (
+            {currentUser?.imageUrl ? (
               <img 
-                src={user.imageUrl} 
+                src={currentUser.imageUrl} 
                 alt={displayName}
                 className="w-8 h-8 rounded-full border border-border/20"
               />
@@ -39,10 +48,10 @@ export const DashboardHeader = () => {
             )}
             <div>
               <h2 className="text-sm font-medium text-foreground">
-                Welcome back, {user?.firstName || "Demo"}!
+                Welcome back, {currentUser?.firstName || "Demo"}!
               </h2>
               <p className="text-xs text-muted-foreground">
-                {user?.primaryEmailAddress?.emailAddress || "demo@timeout.app"}
+                {currentUser?.primaryEmailAddress?.emailAddress || "demo@timeout.app"}
               </p>
             </div>
           </div>

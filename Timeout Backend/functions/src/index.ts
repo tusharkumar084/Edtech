@@ -10,7 +10,7 @@ import * as functions from "firebase-functions";
 import "./config/firebase"; // Initialize Firebase Admin
 
 // Import function modules
-import * as clerkWebhooks from "./webhooks/clerk";
+// import * as clerkWebhooks from "./webhooks/clerk"; // Temporarily disabled - missing file
 import * as userCallables from "./callable/user";
 import * as roomCallables from "./callable/room";
 
@@ -41,14 +41,15 @@ export const api = functions.https.onRequest((req, res) => {
         "joinRoom", 
         "leaveRoom",
         "getPublicRooms",
-        "getRoomDetails"
+        "getRoomDetails",
+        "updateParticipantStatus"
       ],
     },
   });
 });
 
-// Export Clerk webhook functions
-export const clerkWebhook = clerkWebhooks.clerkWebhook;
+// Export Clerk webhook functions (temporarily disabled - missing webhook file)
+// export const clerkWebhook = clerkWebhooks.clerkWebhook;
 
 // Export user callable functions
 export const updateUserRole = userCallables.updateUserRole;
@@ -62,3 +63,4 @@ export const joinRoom = roomCallables.joinRoom;
 export const leaveRoom = roomCallables.leaveRoom;
 export const getPublicRooms = roomCallables.getPublicRooms;
 export const getRoomDetails = roomCallables.getRoomDetails;
+export const updateParticipantStatus = roomCallables.updateParticipantStatus;

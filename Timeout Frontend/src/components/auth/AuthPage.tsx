@@ -1,9 +1,8 @@
 import { useState } from "react";
+import { SignIn, SignUp } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Chrome, Mail, Clock, Users, Target, BookOpen } from "lucide-react";
+import { Chrome, Clock, Users, Target, BookOpen } from "lucide-react";
 import timeoutLogo from "@/assets/time-out-1935482448.png";
 
 interface AuthPageProps {
@@ -12,19 +11,6 @@ interface AuthPageProps {
 
 export const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  // Demo authentication handlers
-  const handleGoogleAuth = () => {
-    console.log("Google auth clicked - demo mode");
-    onAuthSuccess?.();
-  };
-
-  const handleEmailAuth = () => {
-    console.log("Email auth clicked - demo mode");
-    onAuthSuccess?.();
-  };
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -57,61 +43,46 @@ export const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
 
           {/* Auth Card */}
           <Card className="glass p-8 space-y-6">
-            {/* Demo Authentication UI */}
-            <div className="space-y-4">
-                <Button
-                  variant="google"
-                  size="lg"
-                  className="w-full"
-                  onClick={handleGoogleAuth}
-                >
-                  <Chrome className="w-5 h-5" />
-                  Continue with Google
-                </Button>
-
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-border" />
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="bg-card px-4 text-muted-foreground">or</span>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="glass"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="glass"
-                    />
-                  </div>
-                  <Button
-                    variant="hero"
-                    size="lg"
-                    className="w-full"
-                    onClick={handleEmailAuth}
-                  >
-                    <Mail className="w-5 h-5" />
-                    {isSignUp ? "Sign up with Email" : "Sign in with Email"}
-                  </Button>
-                </div>
-              </div>
+            {/* Clerk Authentication */}
+            <div className="flex justify-center">
+              {isSignUp ? (
+                <SignUp 
+                  appearance={{
+                    elements: {
+                      formButtonPrimary: "bg-primary hover:bg-primary/90 text-primary-foreground",
+                      card: "bg-transparent shadow-none",
+                      headerTitle: "text-foreground",
+                      headerSubtitle: "text-muted-foreground",
+                      formFieldLabel: "text-foreground",
+                      formFieldInput: "bg-background/50 border-border text-foreground",
+                      footerActionLink: "text-primary hover:text-primary/90",
+                      dividerLine: "bg-border",
+                      dividerText: "text-muted-foreground",
+                      socialButtonsBlockButton: "bg-background/50 border-border text-foreground hover:bg-background/70",
+                      socialButtonsBlockButtonText: "text-foreground"
+                    }
+                  }}
+                />
+              ) : (
+                <SignIn 
+                  appearance={{
+                    elements: {
+                      formButtonPrimary: "bg-primary hover:bg-primary/90 text-primary-foreground",
+                      card: "bg-transparent shadow-none",
+                      headerTitle: "text-foreground",
+                      headerSubtitle: "text-muted-foreground",
+                      formFieldLabel: "text-foreground",
+                      formFieldInput: "bg-background/50 border-border text-foreground",
+                      footerActionLink: "text-primary hover:text-primary/90",
+                      dividerLine: "bg-border",
+                      dividerText: "text-muted-foreground",
+                      socialButtonsBlockButton: "bg-background/50 border-border text-foreground hover:bg-background/70",
+                      socialButtonsBlockButtonText: "text-foreground"
+                    }
+                  }}
+                />
+              )}
+            </div>
 
             <div className="text-center">
               <button
