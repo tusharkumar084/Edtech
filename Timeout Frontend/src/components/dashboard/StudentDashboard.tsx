@@ -101,9 +101,9 @@ export const StudentDashboard = () => {
         return <ClassesTab />;
       case "liveclass":
         return <LiveClassPanel 
-          classId="sample-class"
-          className="Sample Class"
-          classSubject="Sample Subject"
+          classId="1"
+          className="Mathematics 101"
+          classSubject="Math"
           userType="student"
           useLiveStudents={useLiveStudents}
           startClass={startClass}
