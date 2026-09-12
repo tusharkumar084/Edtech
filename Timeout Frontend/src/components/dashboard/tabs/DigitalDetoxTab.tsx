@@ -318,10 +318,37 @@ export const DigitalDetoxTab = () => {
       console.log('🟡 Session payload:', session);
 
       console.log('🔄 Attempting to call Firebase function...');
-      const result = await startFocusSession(session);
-      console.log('🟢 Session started successfully via Firebase backend:', result);
-      
-      const sessionData = (result.data as any).session;
+      let sessionData: FocusSession;
+      try {
+        const result = await startFocusSession(session);
+        console.log('🟢 Session started successfully via Firebase backend:', result);
+        sessionData = (result.data as any).session;
+      } catch (backendError: any) {
+        const backendCode = backendError?.code || '';
+        const isUnavailable = backendCode.includes('unavailable') ||
+          backendCode.includes('unauthenticated') ||
+          backendCode.includes('internal') ||
+          backendCode.includes('functions/not-found');
+
+        if (!isUnavailable) {
+          throw backendError;
+        }
+
+        // Clerk-authenticated local development may not have Firebase Auth emulators running.
+        // Keep the timer usable locally without pretending the Firebase write succeeded.
+        console.warn('Firebase focus service unavailable; using local demo session.', backendError);
+        sessionData = {
+          id: `local-${Date.now()}`,
+          sessionType,
+          duration,
+          startTime: new Date(),
+          status: 'active',
+        };
+        setAlertMessage({
+          type: 'success',
+          message: 'Focus session started locally. Start Firebase emulators to sync sessions to the backend.',
+        });
+      }
       
       // Ensure startTime is properly set - if backend doesn't provide it, use current time
       let processedStartTime: Date;
@@ -355,7 +382,7 @@ export const DigitalDetoxTab = () => {
       
       console.log('🟢 Setting active session with processed startTime:', processedStartTime);
       
-      const newActiveSession = {
+      const newActiveSession: FocusSession = {
         ...sessionData,
         startTime: processedStartTime,
         status: 'active' // Ensure status is set correctly
@@ -413,16 +440,28 @@ export const DigitalDetoxTab = () => {
       
       // Try to end the session via Firebase backend
       try {
-        const endPayload = {
-          sessionId: activeSession.id,
-          status,
-          userId: user?.id || 'demo-user'
-        };
-        console.log('🔄 Sending end session payload:', endPayload);
-        
-        const endResult = await endFocusSession(endPayload);
-        console.log('🟢 Session ended successfully via Firebase backend');
-        console.log('🔍 Backend end result:', endResult);
+        const isLocalSession = activeSession.id.startsWith('local-');
+        if (isLocalSession) {
+          const actualDuration = Math.max(
+            0,
+            Math.floor((Date.now() - activeSession.startTime.getTime()) / (1000 * 60)),
+          );
+          setAlertMessage({
+            type: 'success',
+            message: `Local focus session ended after ${actualDuration} minute${actualDuration === 1 ? '' : 's'}.`,
+          });
+        } else {
+          const endPayload = {
+            sessionId: activeSession.id,
+            status,
+            userId: user?.id || 'demo-user'
+          };
+          console.log('🔄 Sending end session payload:', endPayload);
+          
+          const endResult = await endFocusSession(endPayload);
+          console.log('🟢 Session ended successfully via Firebase backend');
+          console.log('🔍 Backend end result:', endResult);
+        }
       } catch (backendError) {
         console.error('❌ Backend session end failed:', backendError);
         console.error('🔍 Error details:', { 
@@ -463,7 +502,9 @@ export const DigitalDetoxTab = () => {
       
       // Award tokens for completed sessions
       if (status === 'completed') {
-        const sessionDuration = activeSession.duration;
+        const sessionDuration = activeSession.id.startsWith('local-')
+          ? Math.max(0, Math.floor((Date.now() - activeSession.startTime.getTime()) / (1000 * 60)))
+          : activeSession.duration;
         const baseTokens = sessionDuration; // 1 token per minute
         let bonusTokens = 0;
         let bonusReason = '';
