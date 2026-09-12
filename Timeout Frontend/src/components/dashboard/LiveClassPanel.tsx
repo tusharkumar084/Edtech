@@ -20,6 +20,7 @@ import {
   VolumeX
 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { LiveMeeting } from './LiveMeeting';
 
 // Define TypeScript interfaces for the component
 interface Student {
@@ -655,6 +656,8 @@ export const LiveClassPanel: React.FC<LiveClassPanelProps> = ({
       </CardHeader>
 
       <CardContent className="space-y-4">
+        <LiveMeeting classId={classId} userType={userType} />
+
         {/* Class Controls */}
         <div className="flex flex-wrap gap-2">
           {classState.status === 'ended' ? (
