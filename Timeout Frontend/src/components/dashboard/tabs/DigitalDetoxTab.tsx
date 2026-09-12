@@ -237,11 +237,16 @@ export const DigitalDetoxTab = () => {
       setLoading(true);
       setErrorMessage(null); // Clear any previous errors
       
-      // Load restrictions
-      const restrictionsResult = await getUserRestrictions({ 
-        userId: user?.id || 'demo-user' 
-      });
-      setRestrictions((restrictionsResult.data as any).restrictions || []);
+      // Firebase restrictions are optional in local Clerk-only development.
+      try {
+        const restrictionsResult = await getUserRestrictions({
+          userId: user?.id || 'demo-user'
+        });
+        setRestrictions((restrictionsResult.data as any).restrictions || []);
+      } catch (restrictionError) {
+        console.warn('Using local restrictions because Firebase is unavailable.', restrictionError);
+        setRestrictions([]);
+      }
 
       // Load analytics - use mock data if unavailable
       try {
@@ -268,7 +273,11 @@ export const DigitalDetoxTab = () => {
       console.error('Failed to load digital detox data:', error);
       // Use mock analytics on complete failure
       setAnalytics(generateMockAnalytics());
-      setErrorMessage('Unable to load your data. Some features may use demonstration data.');
+      setErrorMessage(null);
+      setAlertMessage({
+        type: 'success',
+        message: 'Using local demo data. Firebase emulators are not connected.',
+      });
     } finally {
       setLoading(false);
     }
@@ -292,6 +301,20 @@ export const DigitalDetoxTab = () => {
       loadUserData(); // Reload restrictions
     } catch (error) {
       console.error('Failed to create restriction:', error);
+      const localRestriction: AppRestriction = {
+        id: `local-restriction-${Date.now()}`,
+        appName: newAppName.trim(),
+        restrictionType,
+        allowedTime: restrictionType === 'time_limited' ? allowedTime : undefined,
+        isActive: true,
+      };
+      setRestrictions((current) => [...current, localRestriction]);
+      setNewAppName('');
+      setShowCreateRestriction(false);
+      setAlertMessage({
+        type: 'success',
+        message: 'Restriction saved locally. Start Firebase emulators to sync it to the backend.',
+      });
     }
   };
 
