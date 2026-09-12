@@ -22,7 +22,7 @@ export const TeacherLayout = ({ children }: TeacherLayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen min-h-0 bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <header className="h-16 border-b border-border bg-background px-6 flex items-center justify-between">
         <div>
@@ -46,7 +46,7 @@ export const TeacherLayout = ({ children }: TeacherLayoutProps) => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 overflow-auto">
+      <main className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-6 overscroll-contain">
         {children}
       </main>
     </div>

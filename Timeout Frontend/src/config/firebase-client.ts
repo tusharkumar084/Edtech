@@ -19,8 +19,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Connect to emulators in development only
-if (import.meta.env.DEV && typeof window !== 'undefined') {
+// Emulators are opt-in. This matters when two laptops need to share one meeting.
+if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true' && typeof window !== 'undefined') {
   try {
     connectFirestoreEmulator(db, "127.0.0.1", 8090);
     connectAuthEmulator(auth, "http://127.0.0.1:9099");

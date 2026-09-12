@@ -21,8 +21,8 @@ const functions = getFunctions(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Connect to emulators in development
-if (import.meta.env.DEV) {
+// Emulators are opt-in. Leave this false for cross-device meetings via Firebase.
+if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
   try {
     connectFunctionsEmulator(functions, "127.0.0.1", 5001);
     connectAuthEmulator(auth, "http://127.0.0.1:9099");

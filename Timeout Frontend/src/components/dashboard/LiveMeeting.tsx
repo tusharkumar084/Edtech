@@ -142,7 +142,7 @@ export const LiveMeeting = ({ classId, userType }: LiveMeetingProps) => {
       </CardHeader>
       <CardContent className="space-y-3">
         {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
-        {meetingActive && <div className="grid grid-cols-1 gap-3 md:grid-cols-2"><video ref={localVideoRef} autoPlay muted playsInline className="aspect-video w-full rounded-md bg-black object-cover" /><video ref={remoteVideoRef} autoPlay playsInline className="aspect-video w-full rounded-md bg-black object-cover" /></div>}
+        {meetingActive && <div className="grid max-h-[min(60vh,520px)] grid-cols-1 gap-3 overflow-y-auto md:grid-cols-2"><video ref={localVideoRef} autoPlay muted playsInline className="aspect-video max-h-[min(45vh,360px)] w-full rounded-md bg-black object-cover" /><video ref={remoteVideoRef} autoPlay playsInline className="aspect-video max-h-[min(45vh,360px)] w-full rounded-md bg-black object-cover" /></div>}
         <div className="flex flex-wrap gap-2">
           {!meetingActive ? <Button onClick={() => void startMeeting()}><Video className="mr-2 h-4 w-4" />{userType === "teacher" ? "Start Meeting" : "Join Meeting"}</Button> : <><Button variant="outline" onClick={() => toggleTrack("video")}><>{cameraEnabled ? <Camera className="mr-2 h-4 w-4" /> : <CameraOff className="mr-2 h-4 w-4" />}</>{cameraEnabled ? "Camera on" : "Camera off"}</Button><Button variant="outline" onClick={() => toggleTrack("audio")}><>{microphoneEnabled ? <Mic className="mr-2 h-4 w-4" /> : <MicOff className="mr-2 h-4 w-4" />}</>{microphoneEnabled ? "Mic on" : "Mic off"}</Button><Button variant="destructive" onClick={clearMeeting}><Phone className="mr-2 h-4 w-4" />Leave meeting</Button></>}
         </div>
