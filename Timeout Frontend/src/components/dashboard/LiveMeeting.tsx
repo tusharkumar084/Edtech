@@ -120,7 +120,16 @@ export const LiveMeeting = ({ classId, userType }: LiveMeetingProps) => {
       setMeetingActive(true);
     } catch (meetingError) {
       clearMeeting();
-      setError(meetingError instanceof Error ? meetingError.message : "Unable to start the meeting.");
+      const firebaseCode = meetingError && typeof meetingError === "object" && "code" in meetingError
+        ? String((meetingError as { code?: string }).code)
+        : "";
+      if (firebaseCode.includes("admin-only-operation")) {
+        setError("Firebase Anonymous Authentication is disabled. Enable Authentication > Sign-in method > Anonymous in the Firebase Console, then refresh.");
+      } else if (firebaseCode.includes("network-request-failed")) {
+        setError("Firebase is unreachable from this browser. Use shared Firebase mode, refresh the tunnel, and check the browser network connection.");
+      } else {
+        setError(meetingError instanceof Error ? meetingError.message : "Unable to start the meeting.");
+      }
     }
   };
 
