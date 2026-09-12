@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, Users, Video, BookOpen, X } from "lucide-react";
+import { LiveMeeting } from "@/components/dashboard/LiveMeeting";
 
 export const ClassesTab = () => {
   const [showLiveClass, setShowLiveClass] = useState(false);
   // Mock class data
   const liveClass = {
-    subject: "Physics",
+    id: "1",
+    subject: "Mathematics 101",
+    course: "Math",
     time: "09:00-10:00",
     teacher: "Dr. Smith",
     participants: 24
@@ -48,37 +51,8 @@ export const ClassesTab = () => {
               <X className="w-6 h-6" />
             </button>
             <h2 className="text-xl font-bold mb-2">Live Class: {liveClass.subject} ({liveClass.time})</h2>
-            <div className="flex gap-6">
-              {/* Teacher Video */}
-              <div className="flex-1 flex flex-col items-center">
-                <div className="w-64 h-40 bg-muted rounded-lg flex items-center justify-center mb-2">
-                  <span className="text-muted-foreground">[Teacher Video]</span>
-                </div>
-                <div className="font-semibold text-primary">{liveClass.teacher} (Teacher)</div>
-              </div>
-              {/* Students Grid */}
-              <div className="w-48 flex flex-col gap-2">
-                <div className="font-semibold mb-1">Students</div>
-                <div className="grid grid-cols-2 gap-2">
-                  {/* Placeholder student videos */}
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="w-20 h-14 bg-muted rounded flex items-center justify-center text-xs text-muted-foreground">Student {i+1}</div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            {/* Class Timer and Controls */}
-            <div className="flex items-center justify-between mt-6">
-              <div className="flex items-center gap-2">
-                <Clock className="w-5 h-5 text-primary" />
-                <span className="font-mono text-lg">00:00:00</span>
-              </div>
-              <div className="flex gap-4">
-                <Button variant="outline" size="sm">Chat</Button>
-                <Button variant="outline" size="sm">Participants</Button>
-                <Button variant="destructive" size="sm" onClick={() => setShowLiveClass(false)}>Leave Class</Button>
-              </div>
-            </div>
+            <p className="text-sm text-muted-foreground mb-4">{liveClass.course} · {liveClass.teacher}</p>
+            <LiveMeeting classId={liveClass.id} userType="student" />
           </div>
         </div>
       )}
