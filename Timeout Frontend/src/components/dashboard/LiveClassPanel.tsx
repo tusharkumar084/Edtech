@@ -264,7 +264,8 @@ export const LiveClassPanel: React.FC<LiveClassPanelProps> = ({
     }
     
     // Check HTTPS requirement
-    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+    const isLocalDevelopmentHost = ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
+    if (location.protocol !== 'https:' && !isLocalDevelopmentHost) {
       return 'Camera/microphone access requires HTTPS in production. Please use a secure connection.';
     }
     
@@ -912,6 +913,20 @@ export const LiveClassPanel: React.FC<LiveClassPanelProps> = ({
             </div>
           )}
         </div>
+
+        {userType === 'teacher' && teacherCameraError && !teacherCameraEnabled && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{teacherCameraError}</AlertDescription>
+          </Alert>
+        )}
+
+        {userType === 'teacher' && teacherMicrophoneError && !teacherMicrophoneEnabled && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{teacherMicrophoneError}</AlertDescription>
+          </Alert>
+        )}
       </CardContent>
     </Card>
   );
