@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Users, Video, BarChart3, Group, TrendingUp } from "lucide-react";
+import { Plus, Users, Video, BarChart3, Group, TrendingUp, BrainCircuit } from "lucide-react";
 import { LiveClassPanel } from "./LiveClassPanel";
 import { ClassAnalyticsCard } from "./ClassAnalyticsCard";
 import { ResourceShare } from "./ResourceShare";
+import { AIInsights } from "./AIInsights";
 
 // Define the Class type based on what we found in the codebase
 interface Class {
@@ -304,7 +305,7 @@ export const TeacherDashboard = () => {
         </div>
       ) : (
         <Tabs defaultValue="classes" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-2 gap-1 md:grid-cols-6">
             <TabsTrigger value="classes" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
               Classes
@@ -324,6 +325,10 @@ export const TeacherDashboard = () => {
             <TabsTrigger value="progress" className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
               Progress
+            </TabsTrigger>
+            <TabsTrigger value="ai-insights" className="flex items-center gap-2">
+              <BrainCircuit className="w-4 h-4" />
+              AI Insights
             </TabsTrigger>
           </TabsList>
           
@@ -483,6 +488,10 @@ export const TeacherDashboard = () => {
                 </div>
               )}
             </div>
+          </TabsContent>
+
+          <TabsContent value="ai-insights">
+            <AIInsights />
           </TabsContent>
         </Tabs>
       )}

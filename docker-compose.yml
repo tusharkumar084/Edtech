@@ -1,6 +1,20 @@
 version: '3.8'
 
 services:
+  # Isolated ED-04 AI service
+  ai-engine:
+    build:
+      context: ./ai-engine
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - REVIEW_HISTORY_PATH=/app/runtime/review-history.json
+    volumes:
+      - ai-runtime:/app/runtime
+    networks:
+      - timeout-network
+
   # Frontend Development Server
   frontend-dev:
     build:
@@ -115,4 +129,5 @@ networks:
     driver: bridge
 
 volumes:
+  ai-runtime:
   grafana-storage:

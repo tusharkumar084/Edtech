@@ -177,6 +177,26 @@ class BackendEnvironmentConfig {
     return process.env.SENTRY_DSN || '';
   }
 
+  getSendGridApiKey(): string {
+    return process.env.SENDGRID_API_KEY || '';
+  }
+
+  getAlertEmailFrom(): string {
+    return process.env.ALERT_EMAIL_FROM || '';
+  }
+
+  getAlertEmailTo(): string {
+    return process.env.ALERT_EMAIL_TO || '';
+  }
+
+  getSecurityWebhookUrl(): string {
+    return process.env.SECURITY_WEBHOOK_URL || '';
+  }
+
+  getSlackWebhookUrl(): string {
+    return process.env.SLACK_WEBHOOK_URL || '';
+  }
+
   isMetricsEnabled(): boolean {
     return process.env.METRICS_ENABLED !== 'false';
   }

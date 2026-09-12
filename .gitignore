@@ -51,6 +51,10 @@ logs/
 
 # Runtime data
 pids/
+ai-engine/runtime/
+ai-engine/**/__pycache__/
+ai-engine/.pytest_cache/
+ai-engine/**/*.pyc
 *.pid
 *.seed
 *.pid.lock
