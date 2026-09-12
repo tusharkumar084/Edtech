@@ -183,6 +183,7 @@ export const LiveClassPanel: React.FC<LiveClassPanelProps> = ({
   ...additionalProps
 }) => {
   const { students, isLoading, error } = useLiveStudents(classId);
+  const [studentMediaOverrides, setStudentMediaOverrides] = useState<Record<string, Partial<Student>>>({});
   const [classState, setClassState] = useState<ClassState>({
     id: classId,
     status: 'ended',
@@ -522,8 +523,10 @@ export const LiveClassPanel: React.FC<LiveClassPanelProps> = ({
         await disableStudentCamera(classId, studentId);
       }
       
-      // In a real implementation, you would update the student's camera status
-      console.log(`Camera ${enable ? 'enabled' : 'disabled'} for student ${studentId}`);
+      setStudentMediaOverrides((current) => ({
+        ...current,
+        [studentId]: { ...current[studentId], hasCameraEnabled: enable },
+      }));
     } catch (error) {
       console.error(`Failed to ${enable ? 'enable' : 'disable'} camera for student ${studentId}:`, error);
     }
@@ -537,17 +540,23 @@ export const LiveClassPanel: React.FC<LiveClassPanelProps> = ({
         await disableStudentMicrophone(classId, studentId);
       }
       
-      // In a real implementation, you would update the student's microphone status
-      console.log(`Microphone ${enable ? 'enabled' : 'disabled'} for student ${studentId}`);
+      setStudentMediaOverrides((current) => ({
+        ...current,
+        [studentId]: { ...current[studentId], hasMicrophoneEnabled: enable },
+      }));
     } catch (error) {
       console.error(`Failed to ${enable ? 'enable' : 'disable'} microphone for student ${studentId}:`, error);
     }
   };
 
-  const activeStudentsCount = students.filter(student => student.isActive).length;
-  const focusStudentsCount = students.filter(student => student.isInFocus).length;
-  const cameraEnabledStudentsCount = students.filter(student => student.hasCameraEnabled).length;
-  const microphoneEnabledStudentsCount = students.filter(student => student.hasMicrophoneEnabled).length;
+  const displayedStudents = students.map((student) => ({
+    ...student,
+    ...studentMediaOverrides[student.id],
+  }));
+  const activeStudentsCount = displayedStudents.filter(student => student.isActive).length;
+  const focusStudentsCount = displayedStudents.filter(student => student.isInFocus).length;
+  const cameraEnabledStudentsCount = displayedStudents.filter(student => student.hasCameraEnabled).length;
+  const microphoneEnabledStudentsCount = displayedStudents.filter(student => student.hasMicrophoneEnabled).length;
 
   if (isLoading) {
     return (
@@ -789,17 +798,17 @@ export const LiveClassPanel: React.FC<LiveClassPanelProps> = ({
 
         {/* Students List */}
         <div className="space-y-3">
-          <h3 className="font-medium text-sm text-muted-foreground uppercase tracking-wider">
-            Students ({students.length})
+            <h3 className="font-medium text-sm text-muted-foreground uppercase tracking-wider">
+            Students ({displayedStudents.length})
           </h3>
 
-          {students.length === 0 ? (
+          {displayedStudents.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               No students in this class yet
             </div>
           ) : (
             <div className="grid gap-3">
-              {students.map((student) => (
+              {displayedStudents.map((student) => (
                 <div
                   key={student.id}
                   className="flex items-center justify-between p-3 rounded-lg bg-card border hover:bg-accent transition-colors"
